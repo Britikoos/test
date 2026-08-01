@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Вафли FRUIT IT Pro | ProСоставы</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #1a1a2e;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            padding: 8px;
+            overflow: hidden;
+        }
+
+        .product-card {
+            max-width: 420px;
+            width: 100%;
+            max-height: 780px;
+            height: 100vh;
+            background: #ffffff;
+            border-radius: 36px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            position: relative;
+            animation: cardAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+        }
+
+        @keyframes cardAppear {
+            0% { opacity: 0; transform: scale(0.9) translateY(20px); }
+            100% { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* Логотип ProСоставы */
+        .brand-logo {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            z-index: 30;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: 4px 14px 4px 12px;
+            border-radius: 60px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 800;
+            font-size: 12px;
+            color: #1a202c;
+            letter-spacing: -0.3px;
+            animation: logoSlide 0.8s 0.3s both;
+        }
+
+        @keyframes logoSlide {
+            0% { opacity: 0; transform: translateX(30px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        .brand-logo .icon {
+            background: linear-gradient(135deg, #1a202c, #2d3748);
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .brand-logo .highlight {
+            color: #f59e0b;
+        }
+
+        /* --- СЛАЙДЕР --- */
+        .slider-container {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            height: 100%;
+            width: 300%;
+        }
+
+        .slide {
+            width: 33.333%;
+            height: 100%;
+            padding: 20px 18px 60px;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .slide::-webkit-scrollbar {
+            width: 3px;
+        }
+        .slide::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .slide::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+
+        /* --- СТРАНИЦА 0: ГЛАВНАЯ --- */
+        #slide0 {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding-top: 10px;
+        }
+
+        .slide0-grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            width: 100%;
+        }
+
+        .slide0-image {
+            width: 100%;
+            max-width: 200px;
+            aspect-ratio: 1/1;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            animation: imageFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes imageFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-4px); }
+        }
+
+        .slide0-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            display: block;
+        }
+
+        .slide0-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1a202c;
+            line-height: 1.2;
+            text-align: center;
+        }
+
+        .slide0-sub {
+            font-size: 11px;
+            color: #718096;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            text-align: center;
+        }
+
+        .nutrition-box {
+            background: #f0f4fa;
+            border-radius: 14px;
+            padding: 10px 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 2px;
+            width: 100%;
+        }
+
+        .nutri-item {
+            text-align: center;
+        }
+
+        .nutri-item .value {
+            font-weight: 800;
+            font-size: 15px;
+            color: #1a202c;
+            display: block;
+        }
+
+        .nutri-item .label {
+            font-size: 9px;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .nutri-divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #a0aec0;
+            width: 100%;
+        }
+
+        .nutri-divider .line {
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .nutrition-box.purple {
+            background: #faf5ff;
+            border: 1px solid #e9d5ff;
+        }
+
+        .verdict-large {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: #f0fff4;
+            border: 2px solid #68d391;
+            border-radius: 14px;
+            padding: 10px 16px;
+            width: 100%;
+            animation: verdictPop 0.6s 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+            transform: scale(0);
+            flex-wrap: wrap;
+        }
+
+        .verdict-large .label {
+            font-weight: 600;
+            font-size: 12px;
+            color: #2d3748;
+        }
+
+        .verdict-large .result {
+            font-weight: 800;
+            font-size: 16px;
+            color: #22543d;
+            background: #68d391;
+            padding: 2px 14px;
+            border-radius: 60px;
+        }
+
+        .verdict-large .detail {
+            font-size: 10px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        @keyframes verdictPop {
+            0% { transform: scale(0) rotate(-3deg); opacity: 0; }
+            100% { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        /* --- СТРАНИЦА 1: СОСТАВ --- */
+        #slide1 .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .ingredients-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            max-height: 240px;
+            overflow-y: auto;
+        }
+
+        .ingredients-list::-webkit-scrollbar {
+            width: 3px;
+        }
+        .ingredients-list::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .ingredients-list::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 10px;
+        }
+
+        .ingredient-tag {
+            background: white;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 11px;
+            font-weight: 500;
+            color: #2d3748;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            user-select: none;
+            position: relative;
+        }
+
+        .ingredient-tag:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+            border-color: #68d391;
+            background: #f0fff4;
+            z-index: 5;
+        }
+
+        .ingredient-tag.active {
+            background: #68d391;
+            border-color: #276749;
+            color: #1a202c;
+            font-weight: 700;
+            box-shadow: 0 4px 16px rgba(104, 211, 145, 0.3);
+            transform: scale(1.04);
+        }
+
+        .ingredient-tag.good { border-left: 3px solid #68d391; }
+        .ingredient-tag.bad { border-left: 3px solid #fc8181; }
+        .ingredient-tag.neutral { border-left: 3px solid #fbd38d; }
+
+        /* --- КАРТОЧКА ОПИСАНИЯ ИНГРЕДИЕНТА --- */
+        .ingredient-detail {
+            margin-top: 10px;
+            padding: 12px 14px;
+            background: #f7fafc;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            min-height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.4s ease;
+            animation: detailAppear 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes detailAppear {
+            0% { opacity: 0; transform: translateY(10px) scale(0.95); }
+            100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .ingredient-detail .icon-badge {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .ingredient-detail .info {
+            flex: 1;
+        }
+
+        .ingredient-detail .info .name {
+            font-weight: 700;
+            font-size: 13px;
+            color: #1a202c;
+        }
+
+        .ingredient-detail .info .desc {
+            font-size: 12px;
+            color: #4a5568;
+            line-height: 1.4;
+            margin-top: 1px;
+        }
+
+        .ingredient-detail .info .tag {
+            display: inline-block;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 1px 10px;
+            border-radius: 40px;
+            margin-top: 3px;
+        }
+
+        .tag-green { background: #c6f6d5; color: #22543d; }
+        .tag-red { background: #fed7d7; color: #742a2a; }
+        .tag-yellow { background: #feebc8; color: #744210; }
+
+        .ingredient-detail.placeholder {
+            color: #a0aec0;
+            font-size: 12px;
+            justify-content: center;
+            font-weight: 500;
+        }
+
+        .ingredient-detail.placeholder .icon-badge {
+            font-size: 18px;
+        }
+
+        /* --- СТРАНИЦА 2: КОМУ РЕКОМЕНДУЕМ --- */
+        #slide2 .section-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1a202c;
+            margin-bottom: 10px;
+        }
+
+        .rating-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .rating-item {
+            background: #f7fafc;
+            border-radius: 14px;
+            padding: 10px 8px;
+            text-align: center;
+            border: 1px solid #edf2f7;
+            transition: all 0.3s ease;
+        }
+
+        .rating-item .group-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 2px;
+        }
+
+        .stars {
+            color: #e2e8f0;
+            font-size: 16px;
+            letter-spacing: 2px;
+        }
+
+        .stars .filled {
+            color: #f6ad55;
+        }
+
+        .rating-desc {
+            font-size: 9px;
+            color: #718096;
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        .rating-item.high { background: #f0fff4; border-color: #9ae6b4; }
+        .rating-item.medium { background: #fffff0; border-color: #fbd38d; }
+        .rating-item.low { background: #fff5f5; border-color: #feb2b2; }
+
+        .footer-note {
+            margin-top: 10px;
+            font-size: 10px;
+            color: #a0aec0;
+            text-align: center;
+            border-top: 1px solid #edf2f7;
+            padding-top: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .footer-note span {
+            background: #f7fafc;
+            padding: 2px 10px;
+            border-radius: 60px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        /* --- НАВИГАЦИЯ --- */
+        .nav-dots {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+
+        .nav-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 0;
+        }
+
+        .nav-dot.active {
+            background: #2d3748;
+            width: 22px;
+            border-radius: 4px;
+        }
+
+        .nav-arrows {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 20;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(4px);
+            border: 1px solid #e2e8f0;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 14px;
+            color: #2d3748;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .nav-arrows.prev { left: 6px; }
+        .nav-arrows.next { right: 6px; }
+        .nav-arrows.hidden { opacity: 0; pointer-events: none; }
+
+        /* Легенда */
+        .legend {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            font-size: 10px;
+            color: #718096;
+            margin-top: 8px;
+        }
+        .legend span { display: flex; align-items: center; gap: 4px; }
+        .legend .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+        .dot-green { background: #68d391; }
+        .dot-red { background: #fc8181; }
+        .dot-yellow { background: #fbd38d; }
+
+        /* Адаптив под маленькие экраны */
+        @media (max-height: 700px) {
+            .slide { padding: 12px 14px 50px; }
+            .slide0-image { max-width: 140px; }
+            .slide0-title { font-size: 15px; }
+            .nutrition-box { padding: 8px 10px; }
+            .nutri-item .value { font-size: 13px; }
+            .verdict-large { padding: 6px 12px; }
+            .verdict-large .result { font-size: 14px; }
+            .ingredients-list { max-height: 160px; padding: 8px; }
+            .ingredient-tag { font-size: 10px; padding: 3px 10px; }
+            .ingredient-detail { padding: 8px 12px; min-height: 44px; }
+            .ingredient-detail .info .desc { font-size: 11px; }
+            .rating-grid { gap: 6px; }
+            .rating-item { padding: 6px 4px; }
+            .rating-item .group-name { font-size: 11px; }
+            .stars { font-size: 14px; }
+            .brand-logo { top: 10px; right: 12px; padding: 3px 10px 3px 8px; font-size: 10px; }
+            .brand-logo .icon { width: 18px; height: 18px; font-size: 8px; }
+            .nav-dots { bottom: 8px; gap: 8px; }
+            .nav-dot { width: 6px; height: 6px; }
+            .nav-dot.active { width: 16px; }
+        }
+
+        @media (max-height: 600px) {
+            .slide0-image { max-width: 100px; }
+            .slide0-title { font-size: 13px; }
+            .slide0-sub { font-size: 9px; }
+            .nutrition-box { padding: 6px 8px; }
+            .nutri-item .value { font-size: 11px; }
+            .verdict-large .result { font-size: 12px; }
+            .verdict-large .detail { font-size: 9px; }
+            .ingredient-detail .info .desc { font-size: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="product-card" id="productCard">
+
+    <!-- Логотип -->
+    <div class="brand-logo">
+        <span class="icon">🧬</span>
+        <span><span class="highlight">Pro</span>Составы</span>
+    </div>
+
+    <!-- Слайдер -->
+    <div class="slider-container" id="sliderContainer">
+        <!-- СТРАНИЦА 0: ГЛАВНАЯ -->
+        <div class="slide" id="slide0">
+            <div class="slide0-grid">
+                <div class="slide0-image">
+                    <img src="https://cdn.api.lenta.com/resample/webp/900x900/photo/911111/catalog-image/48a1c024-76e1-4694-b245-e8e915fac289.png" alt="Вафли FRUIT IT Pro">
+                </div>
+                <div class="slide0-title">Вафли FRUIT IT Pro</div>
+                <div class="slide0-sub">Яблоко-корица · 35 г · Без глютена</div>
+
+                <div class="nutrition-box">
+                    <div class="nutri-item"><span class="value">21</span><span class="label">Белки</span></div>
+                    <div class="nutri-item"><span class="value">29</span><span class="label">Жиры</span></div>
+                    <div class="nutri-item"><span class="value">45</span><span class="label">Углев.</span></div>
+                    <div class="nutri-item"><span class="value">~500</span><span class="label">Ккал</span></div>
+                </div>
+                <div class="nutri-divider"><span class="line"></span><span>на 100 г</span><span class="line"></span></div>
+
+                <div class="nutrition-box purple">
+                    <div class="nutri-item"><span class="value">7.4</span><span class="label">Белки</span></div>
+                    <div class="nutri-item"><span class="value">10.2</span><span class="label">Жиры</span></div>
+                    <div class="nutri-item"><span class="value">15.8</span><span class="label">Углев.</span></div>
+                    <div class="nutri-item"><span class="value">~175</span><span class="label">Ккал</span></div>
+                </div>
+                <div class="nutri-divider"><span class="line"></span><span>на порцию (35 г)</span><span class="line"></span></div>
+
+                <div class="verdict-large">
+                    <span class="label">🧐 Вердикт</span>
+                    <span class="result">✅ РЕКОМЕНДУЕМ</span>
+                    <span class="detail">Хороший безглютеновый перекус</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- СТРАНИЦА 1: СОСТАВ -->
+        <div class="slide" id="slide1">
+            <div class="section-title">📋 Состав</div>
+            <div class="ingredients-list" id="ingredientContainer">
+                <!-- Теги вставляются из JS -->
+            </div>
+
+            <!-- Блок с описанием ингредиента -->
+            <div class="ingredient-detail placeholder" id="ingredientDetail">
+                <span class="icon-badge">👆</span>
+                <span>Нажми на ингредиент, чтобы узнать о нём</span>
+            </div>
+
+            <div class="legend">
+                <span><span class="dot dot-green"></span> Полезный</span>
+                <span><span class="dot dot-red"></span> Сомнительный</span>
+                <span><span class="dot dot-yellow"></span> Нейтральный</span>
+            </div>
+        </div>
+
+        <!-- СТРАНИЦА 2: КОМУ РЕКОМЕНДУЕМ -->
+        <div class="slide" id="slide2">
+            <div class="section-title">⭐ Кому подходит</div>
+            <div class="rating-grid">
+                <div class="rating-item high">
+                    <div class="group-name">💪 Спортсмены</div>
+                    <div class="stars">★★★★★</div>
+                    <div class="rating-desc">Белок + углеводы</div>
+                </div>
+                <div class="rating-item high">
+                    <div class="group-name">🌾 Безглютеновые</div>
+                    <div class="stars">★★★★★</div>
+                    <div class="rating-desc">Идеальный выбор</div>
+                </div>
+                <div class="rating-item high">
+                    <div class="group-name">🧘 ЗОЖ</div>
+                    <div class="stars">★★★★☆</div>
+                    <div class="rating-desc">Натуральные ингр.</div>
+                </div>
+                <div class="rating-item medium">
+                    <div class="group-name">⚖️ Дефицит ккал</div>
+                    <div class="stars">★★★☆☆</div>
+                    <div class="rating-desc">175 ккал, жирно</div>
+                </div>
+                <div class="rating-item medium">
+                    <div class="group-name">🧓 Пожилые</div>
+                    <div class="stars">★★★☆☆</div>
+                    <div class="rating-desc">Коллаген + жиры</div>
+                </div>
+                <div class="rating-item medium">
+                    <div class="group-name">👶 Дети</div>
+                    <div class="stars">★★★☆☆</div>
+                    <div class="rating-desc">Если нет аллергии</div>
+                </div>
+            </div>
+            <div class="footer-note">
+                <span>⚡ 1-2 шт в день</span>
+                <span>🌿 Без глютена</span>
+                <span>🚫 Арахис, соя, яйца (следы)</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Навигация -->
+    <div class="nav-dots" id="navDots">
+        <button class="nav-dot active" data-index="0"></button>
+        <button class="nav-dot" data-index="1"></button>
+        <button class="nav-dot" data-index="2"></button>
+    </div>
+
+    <button class="nav-arrows prev hidden" id="prevBtn">‹</button>
+    <button class="nav-arrows next" id="nextBtn">›</button>
+
+</div>
+
+<script>
+    (function() {
+        // --- ДАННЫЕ ИНГРЕДИЕНТОВ С ОПИСАНИЯМИ ---
+        const ingredientDescriptions = {
+            "Мука нутовая": {
+                icon: "🌾",
+                desc: "Безглютеновая, богата белком и клетчаткой. Даёт сытость и не поднимает сахар. Отличная замена пшеничной муке!",
+                tag: "Полезно",
+                tagClass: "tag-green"
+            },
+            "Крахмал кукурузный": {
+                icon: "🌽",
+                desc: "Даёт хруст и структуру. Без глютена, но чистый углевод — лучше не увлекаться.",
+                tag: "Нейтрально",
+                tagClass: "tag-yellow"
+            },
+            "Мука рисовая": {
+                icon: "🍚",
+                desc: "Легкая, безглютеновая. Хорошо для текстуры, но почти нет полезных веществ.",
+                tag: "Нейтрально",
+                tagClass: "tag-yellow"
+            },
+            "Масло кокосовое рафинированное дезодорированное отбеленное": {
+                icon: "🥥",
+                desc: "Даёт сладковатый вкус, но это чистые насыщенные жиры. Для сердца — не лучший выбор.",
+                tag: "Сомнительно",
+                tagClass: "tag-red"
+            },
+            "Концентрат сывороточных белков": {
+                icon: "💪",
+                desc: "Быстрый белок из молока. Отлично для мышц и восстановления. Один из лучших компонентов!",
+                tag: "Полезно",
+                tagClass: "tag-green"
+            },
+            "Коллаген говяжий пищевой гидролизованный": {
+                icon: "🦴",
+                desc: "Для суставов, кожи и волос. Но в 35г вафель его мало — не ждите чуда.",
+                tag: "Нейтрально",
+                tagClass: "tag-yellow"
+            },
+            "Эквивалент масла какао (пальмовое масло, стеарин ши)": {
+                icon: "🌴",
+                desc: "Дешёвая замена какао-масла. Насыщенные жиры + трансжиры. Красный флаг, если часто есть.",
+                tag: "Сомнительно",
+                tagClass: "tag-red"
+            },
+            "Арахис обжареный тертый": {
+                icon: "🥜",
+                desc: "Вкусно, но сильный аллерген. Даёт жиры и белок, но может вызвать реакцию.",
+                tag: "Сомнительно",
+                tagClass: "tag-red"
+            },
+            "Корица молотая": {
+                icon: "🌿",
+                desc: "Натуральная специя — антиоксидант, помогает контролировать сахар. Отличный компонент!",
+                tag: "Полезно",
+                tagClass: "tag-green"
+            },
+            "Подсластитель – изомальт": {
+                icon: "🍬",
+                desc: "Сахарозаменитель без калорий. Но в больших дозах может слабить. Мера — ключ!",
+                tag: "Нейтрально",
+                tagClass: "tag-yellow"
+            },
+            "Подсластитель – стевиолгликозиды": {
+                icon: "🌱",
+                desc: "Натуральный подсластитель из стевии. Ноль калорий, не влияет на сахар. Отлично!",
+                tag: "Полезно",
+                tagClass: "tag-green"
+            },
+            "Эмульгатор – E322": {
+                icon: "🧪",
+                desc: "Соевый лецитин. Безопасен, но часто ГМО. В малых дозах — норма.",
+                tag: "Нейтрально",
+                tagClass: "tag-yellow"
+            },
+            "Краситель – кармины": {
+                icon: "🐞",
+                desc: "Красный краситель из насекомых (кошениль). Безопасен, но не для веганов.",
+                tag: "Нейтрально",
+                tagClass: "tag-yellow"
+            },
+            "Загуститель – пектин": {
+                icon: "🍎",
+                desc: "Натуральная клетчатка из фруктов. Полезно для микрофлоры!",
+                tag: "Полезно",
+                tagClass: "tag-green"
+            },
+            "Антиокислитель – экстракт розмарина": {
+                icon: "🌿",
+                desc: "Натуральный консервант. Борется с окислением жиров. Полезная добавка!",
+                tag: "Полезно",
+                tagClass: "tag-green"
+            }
+        };
+
+        // --- БАЗОВЫЙ СПИСОК ИНГРЕДИЕНТОВ ---
+        const ingredientsList = [
+            "Мука нутовая", "Крахмал кукурузный", "Мука рисовая", "Соль пищевая",
+            "Разрыхлитель – натрий двууглекислый",
+            "Масло подсолнечное рафинированное дезодорированное вымороженное",
+            "Эмульгатор – E322", "Краситель – кармины", "Загуститель – пектин",
+            "Масло кокосовое рафинированное дезодорированное отбеленное",
+            "Подсластитель – изомальт", "Концентрат сывороточных белков",
+            "Коллаген говяжий пищевой гидролизованный",
+            "Эквивалент масла какао (средняя фракция пальмового масла, стеарин масла ши, эмульгатор – соевый лецитин, антиокислитель – E330)",
+            "Молоко сухое цельное", "Арахис обжареный тертый", "Корица молотая",
+            "Натуральный ароматизатор", "Эмульгатор – E322",
+            "Подсластитель – стевиолгликозиды", "Антиокислитель – экстракт розмарина"
+        ];
+
+        // Категории для маркировки
+        const goodKeywords = ["Мука нутовая", "Крахмал кукурузный", "Мука рисовая", "Загуститель – пектин", "Концентрат сывороточных белков", "Коллаген говяжий пищевой гидролизованный", "Корица молотая", "Подсластитель – стевиолгликозиды", "Антиокислитель – экстракт розмарина"];
+        const badKeywords = ["Масло кокосовое рафинированное дезодорированное отбеленное", "Эквивалент масла какао", "Краситель – кармины", "Арахис обжареный тертый", "Эмульгатор – E322"];
+
+        const container = document.getElementById('ingredientContainer');
+        const detailBlock = document.getElementById('ingredientDetail');
+
+        function getDescription(text) {
+            // Ищем по точному или частичному совпадению
+            let key = Object.keys(ingredientDescriptions).find(k => text.includes(k) || k.includes(text));
+            if (key) {
+                return ingredientDescriptions[key];
+            }
+            // Если не нашли — базовый ответ
+            return {
+                icon: "🔍",
+                desc: "Компонент промышленной выпечки. В малых дозах безопасен, но лучше не злоупотреблять.",
+                tag: "Нейтрально",
+                tagClass: "tag-yellow"
+            };
+        }
+
+        ingredientsList.forEach(item => {
+            const tag = document.createElement('span');
+            tag.className = 'ingredient-tag';
+
+            const isGood = goodKeywords.some(g => item.includes(g));
+            const isBad = badKeywords.some(b => item.includes(b));
+            if (isGood) tag.classList.add('good');
+            else if (isBad) tag.classList.add('bad');
+            else tag.classList.add('neutral');
+
+            tag.textContent = item;
+
+            tag.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // Убираем актив у всех
+                document.querySelectorAll('.ingredient-tag').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+
+                // Показываем описание
+                const data = getDescription(item);
+                detailBlock.className = 'ingredient-detail';
+                detailBlock.innerHTML = `
+                    <span class="icon-badge">${data.icon}</span>
+                    <div class="info">
+                        <div class="name">${item}</div>
+                        <div class="desc">${data.desc}</div>
+                        <span class="tag ${data.tagClass}">${data.tag}</span>
+                    </div>
+                `;
+            });
+
+            container.appendChild(tag);
+        });
+
+        // Клик вне тегов — снимает выделение, но оставляет описание последнего выбранного
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.ingredient-tag') && !e.target.closest('.ingredient-detail')) {
+                document.querySelectorAll('.ingredient-tag').forEach(t => t.classList.remove('active'));
+            }
+        });
+
+        // --- СЛАЙДЕР ---
+        const slider = document.getElementById('sliderContainer');
+        const dots = document.querySelectorAll('.nav-dot');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        let currentSlide = 0;
+        const totalSlides = 3;
+
+        function goToSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= totalSlides) index = totalSlides - 1;
+            currentSlide = index;
+            slider.style.transform = `translateX(-${index * 33.333}%)`;
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === index));
+            prevBtn.classList.toggle('hidden', index === 0);
+            nextBtn.classList.toggle('hidden', index === totalSlides - 1);
+        }
+
+        dots.forEach(dot => dot.addEventListener('click', () => goToSlide(parseInt(dot.dataset.index))));
+        prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+        nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') goToSlide(currentSlide - 1);
+            if (e.key === 'ArrowRight') goToSlide(currentSlide + 1);
+        });
+
+        let touchStartX = 0, touchEndX = 0;
+        const card = document.getElementById('productCard');
+        card.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+        card.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 40) {
+                if (diff > 0) goToSlide(currentSlide + 1);
+                else goToSlide(currentSlide - 1);
+            }
+        }, { passive: true });
+
+        // --- ЗВЕЗДЫ ---
+        document.querySelectorAll('.stars').forEach(el => {
+            const text = el.textContent;
+            const filled = text.match(/★/g)?.length || 0;
+            const empty = text.match(/☆/g)?.length || 0;
+            el.innerHTML = '';
+            for (let i = 0; i < filled; i++) {
+                const span = document.createElement('span');
+                span.className = 'filled';
+                span.textContent = '★';
+                el.appendChild(span);
+            }
+            for (let i = 0; i < empty; i++) {
+                const span = document.createElement('span');
+                span.className = 'empty';
+                span.textContent = '☆';
+                el.appendChild(span);
+            }
+        });
+
+        goToSlide(0);
+    })();
+</script>
+
+</body>
+</html>
