@@ -191,7 +191,7 @@
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 12px;
-            margin: 12px 0 14px;
+            margin: 12px 0 0px;
         }
 
         .pros-box, .cons-box {
@@ -247,41 +247,8 @@
             font-size: 0.95rem;
         }
 
-        /* ---------- ОПИСАНИЕ + СОСТАВ ---------- */
-        .info-block {
-            background: #1a1a1a;
-            border-radius: 18px;
-            padding: 14px 18px;
-            border: 1px solid #2a2a2a;
-            margin-bottom: 10px;
-        }
-
-        .info-block:last-of-type { margin-bottom: 0; }
-
-        .info-block .label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #d4a057;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-
-        .info-block .text {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #cccccc;
-        }
-
-        .info-block .text.small {
-            font-size: 0.78rem;
-            color: #888888;
-            line-height: 1.5;
-        }
-
         /* ============================================================
-           ВТОРАЯ КАРТОЧКА (ЧЕК-ЛИСТ) — ЧЁРНАЯ
+           ВТОРАЯ КАРТОЧКА (ЧЕК-ЛИСТ) — ЧЁРНАЯ + ОПИСАНИЕ
            ============================================================ */
         .card-dark { background: #141414; }
 
@@ -383,6 +350,33 @@
         .checklist-item .icon.good { color: #7ddfa0; }
         .checklist-item .icon.bad { color: #f08070; }
         .checklist-item .icon.warning { color: #f0d060; }
+
+        /* ---------- ОПИСАНИЕ (только во второй карточке) ---------- */
+        .info-block {
+            background: #1a1a1a;
+            border-radius: 18px;
+            padding: 14px 18px;
+            border: 1px solid #2a2a2a;
+            margin-bottom: 10px;
+        }
+
+        .info-block:last-of-type { margin-bottom: 0; }
+
+        .info-block .label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #d4a057;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .info-block .text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #cccccc;
+        }
 
         /* ---------- ПОДВАЛ ---------- */
         .footer-cta {
@@ -486,7 +480,6 @@
             .macro-val { font-size: 1.3rem; }
             .pros-box li, .cons-box li { font-size: 0.82rem; }
             .info-block .text { font-size: 0.88rem; }
-            .info-block .text.small { font-size: 0.78rem; }
             .result-box .text { font-size: 0.92rem; }
             .checklist-item { font-size: 0.85rem; }
             .footer-cta { font-size: 0.8rem; }
@@ -525,10 +518,6 @@
             .pros-box li, .cons-box li { font-size: 0.75rem; }
             .pros-box .p-title, .cons-box .c-title { font-size: 0.8rem; }
 
-            .info-block .text { font-size: 0.8rem; }
-            .info-block .text.small { font-size: 0.7rem; }
-            .info-block .label { font-size: 0.7rem; }
-
             .product-mini img { width: 75px; height: 75px; padding: 7px; }
             .product-mini .name { font-size: 1rem; }
 
@@ -537,6 +526,9 @@
 
             .checklist-item { font-size: 0.75rem; }
             .checklist .title { font-size: 0.8rem; }
+
+            .info-block .text { font-size: 0.8rem; }
+            .info-block .label { font-size: 0.7rem; }
 
             .footer-cta { font-size: 0.7rem; padding: 8px 12px; }
             .footer-cta .channel { font-size: 0.75rem; padding: 3px 12px; }
@@ -564,7 +556,7 @@
 <body>
 
     <!-- ============================================================ -->
-    <!-- ПРОДУКТ 1: Bombbar Брауни (ОЦЕНКА) — ЧЁРНАЯ -->
+    <!-- ПРОДУКТ 1: Bombbar Брауни (ОЦЕНКА) — БЕЗ ОПИСАНИЯ И СОСТАВА -->
     <!-- ============================================================ -->
     <div class="card">
         <img class="card-image-full" src="https://images-foodtech.magnit.ru/etGNMrtlm5LkixEGI__aCw2umfLfHhaCTWaTMa1xgcA/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/839/839c47313febdfd290f33fd054132bf1/679fbb94fe92a489624bb114b7868b6d.jpeg@webp" alt="Bombbar Брауни" loading="lazy">
@@ -621,15 +613,6 @@
             </div>
         </div>
 
-        <div class="info-block">
-            <div class="label">📋 Описание</div>
-            <div class="text">Альтернатива сладкому для ЗОЖ. Без сахара, 108 ккал и 10 г белка на порцию. Подходит спортсменам и диабетикам.</div>
-        </div>
-        <div class="info-block">
-            <div class="label">🧪 Состав</div>
-            <div class="text small">Концентрат сывороточного белка, овсяные отруби, изомальтоолигосахарид, эритрит, сукралоза, какао, соевый лецитин.</div>
-        </div>
-
         <div class="footer-cta">
             <span>Больше разборов на</span>
             <span class="channel">ProСоставы</span>
@@ -637,11 +620,17 @@
         </div>
     </div>
 
-    <!-- ПРОДУКТ 1: Bombbar Брауни (ЧЕК-ЛИСТ) — ЧЁРНАЯ -->
+    <!-- ПРОДУКТ 1: Bombbar Брауни (ЧЕК-ЛИСТ) — С ОПИСАНИЕМ -->
     <div class="card card-dark">
         <div class="product-mini">
             <img src="https://images-foodtech.magnit.ru/etGNMrtlm5LkixEGI__aCw2umfLfHhaCTWaTMa1xgcA/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/839/839c47313febdfd290f33fd054132bf1/679fbb94fe92a489624bb114b7868b6d.jpeg@webp" alt="Bombbar Брауни" loading="lazy">
             <div class="name">Печенье Брауни Bombbar <span class="weight">40 г</span></div>
+        </div>
+
+        <!-- ОПИСАНИЕ (из первой карточки) -->
+        <div class="info-block">
+            <div class="label">📋 Описание</div>
+            <div class="text">Альтернатива сладкому для ЗОЖ. Без сахара, 108 ккал и 10 г белка на порцию. Подходит спортсменам и диабетикам.</div>
         </div>
 
         <div class="result-box">
@@ -667,7 +656,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- ПРОДУКТ 2: Sneakiq Soj (ОЦЕНКА) — ЧЁРНАЯ -->
+    <!-- ПРОДУКТ 2: Sneakiq Soj (ОЦЕНКА) — БЕЗ ОПИСАНИЯ И СОСТАВА -->
     <!-- ============================================================ -->
     <div class="card">
         <img class="card-image-full" src="https://images-foodtech.magnit.ru/0QzLRHeUA5J6q-nkDFIGvOgx-7blHtQtKmsfHlfufw4/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/pim/goods/8000069555/image/881462f814b65e0a57c872aa1b90189e.jpeg@webp" alt="Sneakiq Soj" loading="lazy">
@@ -724,15 +713,6 @@
             </div>
         </div>
 
-        <div class="info-block">
-            <div class="label">📋 Описание</div>
-            <div class="text">Протеиновый батончик с пребиотиками и жареным арахисом. Приятный вкус солёной карамели.</div>
-        </div>
-        <div class="info-block">
-            <div class="label">🧪 Состав</div>
-            <div class="text small">Олигофруктоза, сывороточный белок, арахис, мальтит, сорбит, сукралоза, стевия, заменитель масла какао.</div>
-        </div>
-
         <div class="footer-cta">
             <span>Больше разборов на</span>
             <span class="channel">ProСоставы</span>
@@ -740,11 +720,16 @@
         </div>
     </div>
 
-    <!-- ПРОДУКТ 2: Sneakiq Soj (ЧЕК-ЛИСТ) — ЧЁРНАЯ -->
+    <!-- ПРОДУКТ 2: Sneakiq Soj (ЧЕК-ЛИСТ) — С ОПИСАНИЕМ -->
     <div class="card card-dark">
         <div class="product-mini">
             <img src="https://images-foodtech.magnit.ru/0QzLRHeUA5J6q-nkDFIGvOgx-7blHtQtKmsfHlfufw4/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/pim/goods/8000069555/image/881462f814b65e0a57c872aa1b90189e.jpeg@webp" alt="Sneakiq Soj" loading="lazy">
             <div class="name">Sneakiq Soj Солёная карамель <span class="weight">50 г</span></div>
+        </div>
+
+        <div class="info-block">
+            <div class="label">📋 Описание</div>
+            <div class="text">Протеиновый батончик с пребиотиками и жареным арахисом. Приятный вкус солёной карамели.</div>
         </div>
 
         <div class="result-box">
@@ -770,7 +755,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- ПРОДУКТ 3: Snaq Fabriq Арахис-изюм (ОЦЕНКА) — ЧЁРНАЯ -->
+    <!-- ПРОДУКТ 3: Snaq Fabriq Арахис-изюм (ОЦЕНКА) — БЕЗ ОПИСАНИЯ -->
     <!-- ============================================================ -->
     <div class="card">
         <img class="card-image-full" src="https://images-foodtech.magnit.ru/qZkYlv9RyaVHxFKtenIJ2O5Ul7S4IH1W4zSF1YhatcQ/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/64d/64d98ca7af44d9e973205bd2733e64a2/c4dd7e6219b57f2ac4aa61177f223ebb.jpeg@webp" alt="Snaq Fabriq" loading="lazy">
@@ -826,15 +811,6 @@
             </div>
         </div>
 
-        <div class="info-block">
-            <div class="label">📋 Описание</div>
-            <div class="text">Протеиновое печенье в молочном шоколаде с арахисом, изюмом и карамелью. Содержит инулин и олигофруктозу.</div>
-        </div>
-        <div class="info-block">
-            <div class="label">🧪 Состав</div>
-            <div class="text small">Молочный белок, арахис, кукурузные волокна, эритрит, глицерин, сукралоза, глазурь, сорбат калия.</div>
-        </div>
-
         <div class="footer-cta">
             <span>Больше разборов на</span>
             <span class="channel">ProСоставы</span>
@@ -842,11 +818,16 @@
         </div>
     </div>
 
-    <!-- ПРОДУКТ 3: Snaq Fabriq Арахис-изюм (ЧЕК-ЛИСТ) — ЧЁРНАЯ -->
+    <!-- ПРОДУКТ 3: Snaq Fabriq Арахис-изюм (ЧЕК-ЛИСТ) — С ОПИСАНИЕМ -->
     <div class="card card-dark">
         <div class="product-mini">
             <img src="https://images-foodtech.magnit.ru/qZkYlv9RyaVHxFKtenIJ2O5Ul7S4IH1W4zSF1YhatcQ/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/64d/64d98ca7af44d9e973205bd2733e64a2/c4dd7e6219b57f2ac4aa61177f223ebb.jpeg@webp" alt="Snaq Fabriq" loading="lazy">
             <div class="name">Snaq Fabriq Арахис-изюм-карамель <span class="weight">45 г</span></div>
+        </div>
+
+        <div class="info-block">
+            <div class="label">📋 Описание</div>
+            <div class="text">Протеиновое печенье в молочном шоколаде с арахисом, изюмом и карамелью. Содержит инулин и олигофруктозу.</div>
         </div>
 
         <div class="result-box">
@@ -871,7 +852,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- ПРОДУКТ 4: Snaq Fabriq Вафельный (ОЦЕНКА) — ЧЁРНАЯ -->
+    <!-- ПРОДУКТ 4: Snaq Fabriq Вафельный (ОЦЕНКА) — БЕЗ ОПИСАНИЯ -->
     <!-- ============================================================ -->
     <div class="card">
         <img class="card-image-full" src="https://images-foodtech.magnit.ru/slY6bfwgINTJV_aiENy9raHuqycbB2dTKDYpJylWfFA/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/be8/be87da53ace9d36b35539e62c08c880b/2b1cd2008f97c12a2fbc21513fe6aedf.jpeg@webp" alt="Snaq Fabriq Вафля" loading="lazy">
@@ -925,15 +906,6 @@
             </div>
         </div>
 
-        <div class="info-block">
-            <div class="label">📋 Описание</div>
-            <div class="text">Хрустящая вафля с ванильным кремом в молочном шоколаде. Без сахара, с пищевыми волокнами.</div>
-        </div>
-        <div class="info-block">
-            <div class="label">🧪 Состав</div>
-            <div class="text small">Молочный шоколад на сукралозе, кокосовое масло, аллюлоза, кукурузная мука, олигофруктоза.</div>
-        </div>
-
         <div class="footer-cta">
             <span>Больше разборов на</span>
             <span class="channel">ProСоставы</span>
@@ -941,11 +913,16 @@
         </div>
     </div>
 
-    <!-- ПРОДУКТ 4: Snaq Fabriq Вафельный (ЧЕК-ЛИСТ) — ЧЁРНАЯ -->
+    <!-- ПРОДУКТ 4: Snaq Fabriq Вафельный (ЧЕК-ЛИСТ) — С ОПИСАНИЕМ -->
     <div class="card card-dark">
         <div class="product-mini">
             <img src="https://images-foodtech.magnit.ru/slY6bfwgINTJV_aiENy9raHuqycbB2dTKDYpJylWfFA/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/be8/be87da53ace9d36b35539e62c08c880b/2b1cd2008f97c12a2fbc21513fe6aedf.jpeg@webp" alt="Snaq Fabriq Вафля" loading="lazy">
             <div class="name">Snaq Fabriq Вафельный (Ваниль) <span class="weight">45 г</span></div>
+        </div>
+
+        <div class="info-block">
+            <div class="label">📋 Описание</div>
+            <div class="text">Хрустящая вафля с ванильным кремом в молочном шоколаде. Без сахара, с пищевыми волокнами.</div>
         </div>
 
         <div class="result-box">
@@ -970,7 +947,7 @@
     </div>
 
     <!-- ============================================================ -->
-    <!-- ПРОДУКТ 5: Bombbar Кокос (ОЦЕНКА) — ЧЁРНАЯ -->
+    <!-- ПРОДУКТ 5: Bombbar Кокос (ОЦЕНКА) — БЕЗ ОПИСАНИЯ -->
     <!-- ============================================================ -->
     <div class="card">
         <img class="card-image-full" src="https://images-foodtech.magnit.ru/_zooOLGwfXLKh8CRwoFn2OnMSBDlZEsaTN5UyQc7PUI/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/pim/goods/1000302692/image/f7417cff51919ae6c90031911f00117d.jpeg@webp" alt="Bombbar Кокос" loading="lazy">
@@ -1026,15 +1003,6 @@
             </div>
         </div>
 
-        <div class="info-block">
-            <div class="label">📋 Описание</div>
-            <div class="text">20 г белка в батончике, стевия, кокосовая стружка. Идеальный перекус для спортсменов, кето-диеты и здорового образа жизни.</div>
-        </div>
-        <div class="info-block">
-            <div class="label">🧪 Состав</div>
-            <div class="text small">Концентрат сывороточного и молочного белка, изомальтоолигосахарид, кокосовое масло, стевиозид.</div>
-        </div>
-
         <div class="footer-cta">
             <span>Больше разборов на</span>
             <span class="channel">ProСоставы</span>
@@ -1042,11 +1010,16 @@
         </div>
     </div>
 
-    <!-- ПРОДУКТ 5: Bombbar Кокос (ЧЕК-ЛИСТ) — ЧЁРНАЯ -->
+    <!-- ПРОДУКТ 5: Bombbar Кокос (ЧЕК-ЛИСТ) — С ОПИСАНИЕМ -->
     <div class="card card-dark">
         <div class="product-mini">
             <img src="https://images-foodtech.magnit.ru/_zooOLGwfXLKh8CRwoFn2OnMSBDlZEsaTN5UyQc7PUI/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/pim/goods/1000302692/image/f7417cff51919ae6c90031911f00117d.jpeg@webp" alt="Bombbar Кокос" loading="lazy">
             <div class="name">Bombbar Кокос <span class="weight">60 г</span></div>
+        </div>
+
+        <div class="info-block">
+            <div class="label">📋 Описание</div>
+            <div class="text">20 г белка в батончике, стевия, кокосовая стружка. Идеальный перекус для спортсменов, кето-диеты и здорового образа жизни.</div>
         </div>
 
         <div class="result-box">
