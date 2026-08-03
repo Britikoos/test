@@ -2,1047 +2,958 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ProСоставы — Разбор продуктов</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>ProСоставы · Лабораторный анализ</title>
     <style>
-        /* ============================================================
-           БАЗА — ЧЁРНЫЙ ПРЕМИАЛЬНЫЙ СТИЛЬ
-           ============================================================ */
+        /* Шрифт как в печатной машинке */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
+            font-family: 'Courier New', 'Roboto Mono', 'Consolas', monospace;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
         }
 
         body {
-            background: #0a0a0a;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            padding: 16px 12px;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            color: #ffffff;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+            padding: 20px;
+            background: #e8edf2;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* ---------- КАРТОЧКА (ЧЁРНАЯ) ---------- */
-        .card {
+        /* Canvas фон */
+        #demo-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 500px;
-            background: #141414;
-            border-radius: 32px;
-            padding: 0 18px 20px 18px;
-            margin-bottom: 30px;
-            border: 1px solid #2a2a2a;
-            box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
-            page-break-after: always;
-            transition: 0.2s;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
         }
 
-        .card:last-child { margin-bottom: 0; }
-
-        /* ---------- ПЕРВАЯ КАРТОЧКА: ФОТО ---------- */
-        .card-image-full {
-            width: calc(100% + 36px);
-            margin: 0 -18px 14px -18px;
-            aspect-ratio: 16 / 5;
-            object-fit: cover;
-            border-radius: 32px 32px 0 0;
-            background: #1a1a1a;
-            border-bottom: 1px solid #2a2a2a;
-            display: block;
-            image-rendering: auto;
+        /* Основная карточка */
+        .lab-card {
+            max-width: 440px;
+            width: 100%;
+            max-height: 95vh;
+            overflow-y: auto;
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(200, 210, 220, 0.5);
+            border-radius: 24px;
+            padding: 24px 20px 28px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+            position: relative;
+            z-index: 1;
+            transition: all 0.2s;
+            scroll-behavior: smooth;
         }
 
-        /* ---------- ВЕРХНЯЯ СТРОКА ---------- */
-        .top-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-            flex-wrap: wrap;
-            gap: 6px;
+        .lab-card::-webkit-scrollbar {
+            width: 4px;
+        }
+        .lab-card::-webkit-scrollbar-track {
+            background: rgba(200, 210, 220, 0.2);
+            border-radius: 10px;
+        }
+        .lab-card::-webkit-scrollbar-thumb {
+            background: rgba(160, 180, 200, 0.4);
+            border-radius: 10px;
         }
 
-        .badge-weight {
-            background: #1f1f1f;
-            padding: 6px 20px;
-            border-radius: 40px;
-            font-size: 0.9rem;
+        .lab-card::before {
+            content: "🧪 PRO СОСТАВЫ · ЛАБОРАТОРИЯ";
+            position: sticky;
+            top: 0;
+            left: 20px;
+            display: inline-block;
+            background: rgba(232, 237, 242, 0.9);
+            backdrop-filter: blur(4px);
+            color: #4a6a85;
+            font-size: 9px;
             font-weight: 600;
-            color: #a0a0a0;
-            border: 1px solid #2a2a2a;
-            letter-spacing: 0.3px;
-        }
-
-        .badge-rating {
-            font-size: 0.85rem;
-            font-weight: 600;
-            padding: 6px 20px;
+            letter-spacing: 1.5px;
+            padding: 0 16px;
             border-radius: 40px;
-            white-space: nowrap;
-            border: 1px solid transparent;
-            color: #fff;
-            letter-spacing: 0.4px;
-        }
-
-        .badge-rating.good {
-            background: #1a6b3a;
-            border-color: #2a8a4a;
-            color: #7ddfa0;
-        }
-        .badge-rating.mid {
-            background: #6b5a1a;
-            border-color: #8a7a2a;
-            color: #f0d060;
-        }
-        .badge-rating.bad {
-            background: #6b2a1a;
-            border-color: #8a3a2a;
-            color: #f08070;
-        }
-
-        /* ---------- НАЗВАНИЕ ---------- */
-        .name {
-            font-size: 1.45rem;
-            font-weight: 700;
-            line-height: 1.3;
-            color: #ffffff;
-            margin: 8px 0 6px;
-            letter-spacing: -0.3px;
-        }
-
-        .name .weight {
-            font-weight: 400;
-            color: #666666;
-            font-size: 0.95rem;
-        }
-
-        /* ---------- КБЖУ ---------- */
-        .macro-block {
-            background: #1a1a1a;
-            border-radius: 22px;
-            padding: 16px 12px 14px;
-            margin: 10px 0 14px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .macro-block .label {
-            font-size: 0.75rem;
+            border: 1px solid rgba(200, 210, 220, 0.5);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: #888888;
-            font-weight: 600;
-            text-align: center;
-            margin-bottom: 8px;
+            z-index: 5;
+            margin-bottom: 12px;
         }
 
-        .macro-block .label span {
-            background: #222222;
-            padding: 4px 18px;
+        .lab-card::after {
+            content: "⚗️ АНАЛИЗ № 2026-08";
+            position: sticky;
+            bottom: 0;
+            right: 20px;
+            display: inline-block;
+            float: right;
+            background: rgba(232, 237, 242, 0.9);
+            backdrop-filter: blur(4px);
+            color: #6a8aa5;
+            font-size: 8px;
+            font-weight: 500;
+            padding: 0 14px;
+            border: 1px solid rgba(200, 210, 220, 0.5);
             border-radius: 30px;
-            font-size: 0.7rem;
-            border: 1px solid #333333;
-            color: #aaaaaa;
+            letter-spacing: 0.8px;
+            margin-top: 10px;
+            clear: both;
         }
 
-        .macro-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 6px;
-            text-align: center;
-        }
-
-        .macro-item {
-            display: flex;
-            flex-direction: column;
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 16px;
-            padding: 10px 4px;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-        }
-
-        .macro-val {
-            font-weight: 700;
-            font-size: 1.35rem;
-            color: #ffffff;
-            line-height: 1.2;
-        }
-
-        .macro-val small {
-            font-size: 0.85rem;
-            font-weight: 400;
-            color: #666666;
-        }
-
-        .macro-label {
-            font-size: 0.6rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #666666;
-            font-weight: 600;
-            margin-top: 2px;
-        }
-
-        /* ---------- ПЛЮСЫ/МИНУСЫ ---------- */
-        .pros-cons-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 12px 0 0px;
-        }
-
-        .pros-box, .cons-box {
-            padding: 16px 16px;
-            border-radius: 18px;
-            background: #1a1a1a;
-            border-left: 5px solid #2a8a4a;
-        }
-
-        .cons-box { border-left-color: #8a3a2a; }
-
-        .pros-box .p-title, .cons-box .c-title {
-            font-size: 0.9rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .pros-box .p-title { color: #7ddfa0; }
-        .cons-box .c-title { color: #f08070; }
-
-        .pros-box ul, .cons-box ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .pros-box li, .cons-box li {
-            font-size: 0.82rem;
-            line-height: 1.5;
-            padding: 4px 0;
-            color: #cccccc;
-            display: flex;
-            gap: 8px;
-            align-items: flex-start;
-        }
-
-        .pros-box li::before {
-            content: "✓";
-            flex-shrink: 0;
-            font-weight: 700;
-            color: #4caf84;
-            font-size: 0.95rem;
-        }
-
-        .cons-box li::before {
-            content: "✕";
-            flex-shrink: 0;
-            font-weight: 700;
-            color: #e57373;
-            font-size: 0.95rem;
-        }
-
-        /* ============================================================
-           ВТОРАЯ КАРТОЧКА (ЧЕК-ЛИСТ) — ЧЁРНАЯ + ОПИСАНИЕ
-           ============================================================ */
-        .card-dark { background: #141414; }
-
-        .product-mini {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            margin-bottom: 14px;
-            padding-top: 8px;
-        }
-
-        .product-mini img {
-            width: 100px;
-            height: 100px;
-            object-fit: contain;
-            border-radius: 18px;
-            background: #1a1a1a;
-            padding: 10px;
-            border: 1px solid #2a2a2a;
-            flex-shrink: 0;
-            image-rendering: auto;
-        }
-
-        .product-mini .name {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #ffffff;
-        }
-
-        .product-mini .name .weight {
-            font-weight: 400;
-            color: #666666;
-            font-size: 0.85rem;
-        }
-
-        .result-box {
-            background: #1a1a1a;
-            border-radius: 20px;
-            padding: 18px 22px;
-            margin: 10px 0 14px;
-            border-left: 6px solid #d4a057;
-            border: 1px solid #2a2a2a;
-            border-left-width: 6px;
-        }
-
-        .result-box .title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #d4a057;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 4px;
-        }
-
-        .result-box .text {
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: #cccccc;
-        }
-
-        .result-box .text strong { color: #f0d060; }
-
-        .checklist {
-            background: #1a1a1a;
-            border-radius: 20px;
-            padding: 18px 20px;
-            margin: 10px 0 14px;
-            border: 1px solid #2a2a2a;
-        }
-
-        .checklist .title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .checklist .title .brand { color: #d4a057; }
-
-        .checklist-item {
+        /* Логотип */
+        .logo-section {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 5px 0;
-            font-size: 0.88rem;
-            color: #cccccc;
-            line-height: 1.4;
+            margin-bottom: 14px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(200, 210, 220, 0.5);
         }
 
-        .checklist-item .icon {
-            font-size: 1.1rem;
-            flex-shrink: 0;
-        }
-
-        .checklist-item .icon.good { color: #7ddfa0; }
-        .checklist-item .icon.bad { color: #f08070; }
-        .checklist-item .icon.warning { color: #f0d060; }
-
-        /* ---------- ОПИСАНИЕ (только во второй карточке) ---------- */
-        .info-block {
-            background: #1a1a1a;
-            border-radius: 18px;
-            padding: 14px 18px;
-            border: 1px solid #2a2a2a;
-            margin-bottom: 10px;
-        }
-
-        .info-block:last-of-type { margin-bottom: 0; }
-
-        .info-block .label {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #d4a057;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 4px;
-        }
-
-        .info-block .text {
-            font-size: 0.9rem;
-            line-height: 1.5;
-            color: #cccccc;
-        }
-
-        /* ---------- ПОДВАЛ ---------- */
-        .footer-cta {
-            margin-top: 16px;
-            padding: 12px 18px;
-            background: #1a1a1a;
-            border-radius: 50px;
-            text-align: center;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #888888;
-            border: 1px solid #2a2a2a;
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(232, 237, 242, 0.7);
+            border-radius: 10px;
+            border: 1px solid rgba(200, 210, 220, 0.5);
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-wrap: wrap;
-            gap: 6px 12px;
+            font-size: 18px;
+            flex-shrink: 0;
         }
 
-        .footer-cta .channel {
-            background: #d4a057;
-            color: #141414;
-            padding: 5px 18px;
-            border-radius: 50px;
-            font-size: 0.9rem;
+        .logo-text .brand {
+            font-size: 16px;
             font-weight: 700;
-            display: inline-flex;
+            color: #1a3a5a;
+            letter-spacing: 0.5px;
+        }
+
+        .logo-text .sub {
+            font-size: 8px;
+            color: #6a8aa5;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-top: -2px;
+        }
+
+        .status-badge {
+            margin-left: auto;
+            font-size: 8px;
+            color: #34a853;
+            background: rgba(230, 244, 234, 0.8);
+            padding: 3px 12px;
+            border-radius: 30px;
+            border: 1px solid rgba(200, 230, 208, 0.5);
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        /* Статус-бар */
+        .status-bar {
+            display: flex;
+            gap: 12px;
             align-items: center;
+            margin-bottom: 16px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(4px);
+            border-radius: 12px;
+            border: 1px solid rgba(200, 210, 220, 0.4);
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        .status-dot.green {
+            background: #34a853;
+        }
+        .status-dot.blue {
+            background: #4285f4;
+        }
+        .status-dot.gray {
+            background: #9aa6b2;
+        }
+
+        .status-text {
+            font-size: 10px;
+            color: #5a7a95;
+            letter-spacing: 0.3px;
+            font-weight: 400;
+        }
+        .status-text .highlight {
+            color: #1a3a5a;
+            font-weight: 600;
+        }
+
+        /* Продукт */
+        .product-header {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(4px);
+            border-radius: 20px;
+            padding: 8px 12px 8px 8px;
+            border: 1px solid rgba(200, 210, 220, 0.4);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+            margin-bottom: 16px;
+        }
+
+        .product-img {
+            width: 72px;
+            height: 72px;
+            background: rgba(240, 243, 247, 0.7);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(200, 210, 220, 0.4);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .product-title {
+            flex: 1;
+            min-width: 0;
+        }
+        .product-title h2 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1a2a3a;
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+        .product-title .sub {
+            font-size: 10px;
+            color: #6a8aa5;
+            display: block;
+            margin-top: 2px;
+        }
+        .product-title .price {
+            font-size: 17px;
+            font-weight: 700;
+            color: #1a3a5a;
+            display: inline-block;
+            margin-top: 4px;
+        }
+
+        /* Навигация по страницам */
+        .page-nav {
+            display: flex;
+            gap: 6px;
+            margin: 10px 0 14px;
+            padding: 4px;
+            background: rgba(232, 237, 242, 0.4);
+            border-radius: 30px;
+            border: 1px solid rgba(200, 210, 220, 0.3);
+        }
+
+        .page-nav button {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 8px 12px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #6a8aa5;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .page-nav button.active {
+            background: rgba(255, 255, 255, 0.8);
+            color: #1a3a5a;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+        }
+
+        .page-nav button:hover:not(.active) {
+            color: #1a3a5a;
+        }
+
+        /* Страницы */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* КБЖУ */
+        .nutrition-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2px 10px 2px;
+            border-bottom: 1px solid rgba(200, 210, 220, 0.4);
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .nutrition-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: #4a6a85;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .toggle-group {
+            display: flex;
+            gap: 4px;
+            background: rgba(232, 237, 242, 0.6);
+            border-radius: 30px;
+            padding: 3px;
+        }
+        .toggle-btn {
+            border: none;
+            background: transparent;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 10px;
+            font-weight: 600;
+            color: #6a8aa5;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .toggle-btn.active {
+            background: rgba(255, 255, 255, 0.8);
+            color: #1a3a5a;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+        }
+        .toggle-btn:hover:not(.active) {
+            color: #1a3a5a;
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .nutrient-item {
+            background: rgba(245, 247, 250, 0.7);
+            border-radius: 12px;
+            padding: 10px 4px;
+            text-align: center;
+            border: 1px solid rgba(200, 210, 220, 0.3);
+            transition: all 0.3s;
+        }
+        .nutrient-item .label {
+            font-size: 8px;
+            text-transform: uppercase;
+            color: #6a8aa5;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        .nutrient-item .value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a2a3a;
+            line-height: 1.3;
+            transition: all 0.3s;
+        }
+        .nutrient-item .sub {
+            font-size: 8px;
+            color: #8aaabc;
+            display: block;
+            margin-top: 1px;
+        }
+
+        /* Плюсы/минусы */
+        .pros-cons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 14px 0 16px;
+        }
+        .pros-cons>div {
+            background: rgba(245, 247, 250, 0.7);
+            border-radius: 14px;
+            padding: 12px 16px;
+            border-left: 4px solid;
+        }
+        .pros-cons .pros {
+            border-left-color: #34a853;
+        }
+        .pros-cons .cons {
+            border-left-color: #ea4335;
+        }
+
+        .pros-cons h4 {
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            color: #4a6a85;
+        }
+        .pros-cons ul {
+            list-style: none;
+        }
+        .pros-cons li {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #2a3a4a;
+            padding: 2px 0;
+            display: flex;
+            gap: 8px;
+        }
+        .pros-cons .pros li::before {
+            content: "+";
+            color: #34a853;
+            font-weight: 700;
+        }
+        .pros-cons .cons li::before {
+            content: "−";
+            color: #ea4335;
+            font-weight: 700;
+        }
+
+        /* Состав */
+        .ingredient-section {
+            background: rgba(245, 247, 250, 0.7);
+            border-radius: 14px;
+            padding: 14px 16px;
+            border: 1px solid rgba(200, 210, 220, 0.3);
+        }
+
+        .ingredient-section .section-title {
+            font-size: 10px;
+            font-weight: 600;
+            color: #4a6a85;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(200, 210, 220, 0.3);
+            padding-bottom: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
             gap: 6px;
         }
 
-        .footer-cta .channel::before {
-            content: "📲";
-            font-size: 0.85rem;
+        .ingredient-section .section-title .legend {
+            display: flex;
+            gap: 8px;
+            font-weight: 400;
+            font-size: 8px;
+            text-transform: none;
+        }
+        .ingredient-section .section-title .legend span {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .legend-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .legend-dot.red {
+            background: #ea4335;
+        }
+        .legend-dot.orange {
+            background: #fbbc04;
+        }
+        .legend-dot.yellow {
+            background: #fdd663;
+        }
+        .legend-dot.green {
+            background: #34a853;
         }
 
-        .footer-cta .badge {
-            background: rgba(212, 160, 87, 0.15);
-            color: #d4a057;
+        .ingredient-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px 8px;
+            max-height: 340px;
+            overflow-y: auto;
+            padding: 4px 2px;
+        }
+
+        .ingredient-list::-webkit-scrollbar {
+            width: 3px;
+        }
+        .ingredient-list::-webkit-scrollbar-track {
+            background: rgba(232, 237, 242, 0.5);
+            border-radius: 10px;
+        }
+        .ingredient-list::-webkit-scrollbar-thumb {
+            background: rgba(192, 200, 208, 0.7);
+            border-radius: 10px;
+        }
+
+        /* Интерактивный ингредиент — только увеличение при наведении */
+        .ingredient-tag {
+            border-radius: 30px;
             padding: 4px 16px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            border: 1px solid rgba(212, 160, 87, 0.15);
+            font-size: 10px;
+            white-space: nowrap;
+            border: 1px solid;
+            transition: all 0.25s ease;
+            display: inline-block;
+            cursor: default;
+            user-select: none;
         }
 
-        /* ---------- ПЕЧАТЬ ---------- */
-        @media print {
-            body {
-                background: #0a0a0a;
-                padding: 6px 4px;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .card {
-                box-shadow: none;
-                border: 1px solid #2a2a2a;
-                border-radius: 24px;
-                page-break-after: always;
-                max-width: 100%;
-                margin: 0 auto 14px;
-                padding: 0 14px 16px 14px;
-                background: #141414;
-            }
-
-            .card-image-full {
-                width: calc(100% + 28px);
-                margin: 0 -14px 12px -14px;
-                border-radius: 24px 24px 0 0;
-                aspect-ratio: 16 / 4.5;
-                border-bottom: 1px solid #2a2a2a;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .product-mini img {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .footer-cta {
-                background: #1a1a1a;
-                border: 1px solid #2a2a2a;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .badge-rating,
-            .macro-block,
-            .pros-box,
-            .cons-box,
-            .info-block,
-            .result-box,
-            .checklist {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .name { font-size: 1.4rem; }
-            .macro-val { font-size: 1.3rem; }
-            .pros-box li, .cons-box li { font-size: 0.82rem; }
-            .info-block .text { font-size: 0.88rem; }
-            .result-box .text { font-size: 0.92rem; }
-            .checklist-item { font-size: 0.85rem; }
-            .footer-cta { font-size: 0.8rem; }
+        .ingredient-tag:hover {
+            transform: scale(1.12);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            z-index: 2;
+            position: relative;
         }
 
-        /* ---------- АДАПТИВ ДЛЯ ТЕЛЕФОНА ---------- */
-        @media (max-width: 480px) {
-            body { padding: 8px 6px; }
-
-            .card {
-                padding: 0 12px 14px 12px;
-                border-radius: 24px;
-                max-width: 100%;
-            }
-
-            .card-image-full {
-                width: calc(100% + 24px);
-                margin: 0 -12px 10px -12px;
-                border-radius: 24px 24px 0 0;
-                aspect-ratio: 16 / 4.5;
-            }
-
-            .badge-weight { font-size: 0.75rem; padding: 4px 14px; }
-            .badge-rating { font-size: 0.7rem; padding: 4px 14px; }
-
-            .name { font-size: 1.15rem; }
-            .name .weight { font-size: 0.8rem; }
-
-            .macro-block .label { font-size: 0.6rem; }
-            .macro-block .label span { font-size: 0.55rem; }
-            .macro-val { font-size: 1.1rem; }
-            .macro-val small { font-size: 0.7rem; }
-
-            .pros-cons-row { grid-template-columns: 1fr; gap: 8px; }
-            .pros-box, .cons-box { padding: 12px 14px; }
-            .pros-box li, .cons-box li { font-size: 0.75rem; }
-            .pros-box .p-title, .cons-box .c-title { font-size: 0.8rem; }
-
-            .product-mini img { width: 75px; height: 75px; padding: 7px; }
-            .product-mini .name { font-size: 1rem; }
-
-            .result-box .text { font-size: 0.82rem; }
-            .result-box .title { font-size: 0.85rem; }
-
-            .checklist-item { font-size: 0.75rem; }
-            .checklist .title { font-size: 0.8rem; }
-
-            .info-block .text { font-size: 0.8rem; }
-            .info-block .label { font-size: 0.7rem; }
-
-            .footer-cta { font-size: 0.7rem; padding: 8px 12px; }
-            .footer-cta .channel { font-size: 0.75rem; padding: 3px 12px; }
-            .footer-cta .badge { font-size: 0.65rem; padding: 3px 10px; }
+        .ingredient-tag.red {
+            background: rgba(234, 67, 53, 0.12);
+            border-color: rgba(234, 67, 53, 0.3);
+            color: #c62828;
+        }
+        .ingredient-tag.orange {
+            background: rgba(251, 188, 4, 0.10);
+            border-color: rgba(251, 188, 4, 0.25);
+            color: #b45f06;
+        }
+        .ingredient-tag.yellow {
+            background: rgba(253, 214, 99, 0.08);
+            border-color: rgba(253, 214, 99, 0.2);
+            color: #7a6a1a;
+        }
+        .ingredient-tag.green {
+            background: rgba(52, 168, 83, 0.10);
+            border-color: rgba(52, 168, 83, 0.2);
+            color: #1e7e34;
         }
 
-        @media (min-width: 481px) and (max-width: 768px) {
-            .card { padding: 0 16px 18px 16px; }
-            .card-image-full { aspect-ratio: 16 / 4.5; }
-            .name { font-size: 1.3rem; }
-            .pros-box li, .cons-box li { font-size: 0.82rem; }
-            .info-block .text { font-size: 0.88rem; }
-            .checklist-item { font-size: 0.85rem; }
+        .analysis-footnote {
+            font-size: 8px;
+            color: #8aaabc;
+            text-align: right;
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(200, 210, 220, 0.3);
+            display: flex;
+            justify-content: space-between;
+        }
+        .analysis-footnote .badge {
+            background: rgba(232, 237, 242, 0.6);
+            padding: 0 12px;
+            border-radius: 30px;
+            color: #4a6a85;
         }
 
-        /* ---------- ДЛЯ ЭКРАНОВ С ВЫСОКОЙ ПЛОТНОСТЬЮ ---------- */
-        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-            .card-image-full,
-            .product-mini img {
-                image-rendering: auto;
+        @media (max-width: 400px) {
+            .product-title h2 {
+                font-size: 13px;
+            }
+            .product-img {
+                width: 64px;
+                height: 64px;
+            }
+            .nutrient-item .value {
+                font-size: 17px;
+            }
+            .nutrition-grid {
+                gap: 5px;
+            }
+            .lab-card {
+                padding: 18px 14px 22px;
+            }
+            .ingredient-section .section-title .legend {
+                font-size: 7px;
+                gap: 4px;
+            }
+            .ingredient-tag {
+                font-size: 9px;
+                padding: 3px 12px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- ============================================================ -->
-    <!-- ПРОДУКТ 1: Bombbar Брауни (ОЦЕНКА) — БЕЗ ОПИСАНИЯ И СОСТАВА -->
-    <!-- ============================================================ -->
-    <div class="card">
-        <img class="card-image-full" src="https://images-foodtech.magnit.ru/etGNMrtlm5LkixEGI__aCw2umfLfHhaCTWaTMa1xgcA/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/839/839c47313febdfd290f33fd054132bf1/679fbb94fe92a489624bb114b7868b6d.jpeg@webp" alt="Bombbar Брауни" loading="lazy">
+    <!-- Canvas для фоновой анимации -->
+    <canvas id="demo-canvas"></canvas>
 
-        <div class="top-row">
-            <span class="badge-weight">40 г</span>
-            <span class="badge-rating good">Рекомендуем</span>
+    <!-- Основная карточка -->
+    <div class="lab-card">
+
+        <!-- Логотип -->
+        <div class="logo-section">
+            <div class="logo-icon">🧬</div>
+            <div class="logo-text">
+                <span class="brand">ProСоставы</span>
+                <span class="sub">Лаборатория пищевого анализа</span>
+            </div>
+            <span class="status-badge">● онлайн</span>
         </div>
 
-        <div class="name">Печенье Брауни Bombbar</div>
+        <!-- Статус -->
+        <div class="status-bar">
+            <span class="status-dot green"></span>
+            <span class="status-dot blue"></span>
+            <span class="status-dot gray"></span>
+            <span class="status-text">⚡ <span class="highlight">СИСТЕМА</span> · ГОТОВ К АНАЛИЗУ</span>
+        </div>
 
-        <div class="macro-block">
-            <div class="label"><span>⚡ на порцию (40 г)</span></div>
-            <div class="macro-row">
-                <div class="macro-item">
-                    <span class="macro-val">108 <small>ккал</small></span>
-                    <span class="macro-label">Калории</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">10 <small>г</small></span>
-                    <span class="macro-label">Белки</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">4.2 <small>г</small></span>
-                    <span class="macro-label">Жиры</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">5.2 <small>г</small></span>
-                    <span class="macro-label">Углеводы</span>
-                </div>
+        <!-- Продукт -->
+        <div class="product-header">
+            <div class="product-img">
+                <img src="https://images-foodtech.magnit.ru/etGNMrtlm5LkixEGI__aCw2umfLfHhaCTWaTMa1xgcA/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/839/839c47313febdfd290f33fd054132bf1/679fbb94fe92a489624bb114b7868b6d.jpeg@webp" alt="Bombbar" loading="lazy">
+            </div>
+            <div class="product-title">
+                <h2>Печенье шоколадный брауни</h2>
+                <span class="sub">Bombbar · 40 г</span>
+                <span class="price">89.99 ₽</span>
             </div>
         </div>
 
-        <div class="pros-cons-row">
-            <div class="pros-box">
-                <div class="p-title">✅ Польза</div>
-                <ul>
-                    <li>Идеальный баланс Б/Ж/У для похудения</li>
-                    <li>Высокое содержание белка — 25 г на 100 г</li>
-                    <li>Насыщает на 3–4 часа, убирает тягу к сладкому</li>
-                    <li>Низкий гликемический индекс — не поднимает сахар</li>
-                    <li>Компактный формат — удобно брать с собой</li>
-                </ul>
+        <!-- Навигация по страницам -->
+        <div class="page-nav">
+            <button class="active" data-page="page1">📊 Обзор</button>
+            <button data-page="page2">🧪 Состав</button>
+        </div>
+
+        <!-- СТРАНИЦА 1: Обзор -->
+        <div id="page1" class="page active">
+
+            <!-- КБЖУ -->
+            <div class="nutrition-header">
+                <span class="nutrition-title">📊 Пищевая ценность</span>
+                <div class="toggle-group" id="toggleGroup">
+                    <button class="toggle-btn active" data-weight="100">100 г</button>
+                    <button class="toggle-btn" data-weight="40">Порция</button>
+                </div>
             </div>
-            <div class="cons-box">
-                <div class="c-title">⚠️ Нюансы</div>
-                <ul>
-                    <li>Содержит сахарозаменители (эритрит, сукралоза)</li>
-                    <li>Может вызвать вздутие у чувствительных людей</li>
-                    <li>Соевый лецитин — часто ГМО-продукт</li>
-                    <li>Длинный состав, много Е-добавок</li>
-                    <li>Содержит глютен (овсяные отруби)</li>
-                </ul>
+
+            <div class="nutrition-grid">
+                <div class="nutrient-item">
+                    <div class="label">Ккал</div>
+                    <div class="value" id="calVal">271</div>
+                    <span class="sub" id="calSub"></span>
+                </div>
+                <div class="nutrient-item">
+                    <div class="label">Белки</div>
+                    <div class="value" id="protVal">25</div>
+                    <span class="sub" id="protSub"></span>
+                </div>
+                <div class="nutrient-item">
+                    <div class="label">Жиры</div>
+                    <div class="value" id="fatVal">10.5</div>
+                    <span class="sub" id="fatSub"></span>
+                </div>
+                <div class="nutrient-item">
+                    <div class="label">Углеводы</div>
+                    <div class="value" id="carbVal">13</div>
+                    <span class="sub" id="carbSub"></span>
+                </div>
+            </div>
+
+            <!-- Плюсы/минусы -->
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4>✅ Преимущества</h4>
+                    <ul>
+                        <li>Высокое содержание белка: 25 г/100 г (10 г на порцию)</li>
+                        <li>Без добавленного сахара — эритрит + сукралоза</li>
+                        <li>Подходит для диабетиков и спортсменов</li>
+                        <li>Источник пищевых волокон (отруби, ИМО)</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4>⚠️ Предостережения</h4>
+                    <ul>
+                        <li>Содержит глютен (овсяные отруби) — не для целиакии</li>
+                        <li>Искусственные подсластители могут вызывать вздутие</li>
+                        <li>Наличие соевого лецитина и эмульгаторов</li>
+                        <li>Консервант сорбат калия в составе</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="analysis-footnote">
+                <span class="badge">✓ первичный анализ</span>
+                <span>ProСоставы · 2026</span>
             </div>
         </div>
 
-        <div class="footer-cta">
-            <span>Больше разборов на</span>
-            <span class="channel">ProСоставы</span>
-            <span class="badge">⭐</span>
+        <!-- СТРАНИЦА 2: Состав -->
+        <div id="page2" class="page">
+            <div class="ingredient-section">
+                <div class="section-title">
+                    <span>🧪 Детальный состав</span>
+                    <span class="legend">
+                        <span><span class="legend-dot red"></span> риск</span>
+                        <span><span class="legend-dot orange"></span> спорно</span>
+                        <span><span class="legend-dot yellow"></span> нейтр.</span>
+                        <span><span class="legend-dot green"></span> полезно</span>
+                    </span>
+                </div>
+                <div class="ingredient-list">
+                    <!-- Порядок строго по исходному составу -->
+                    <span class="ingredient-tag green">белковая смесь</span>
+                    <span class="ingredient-tag yellow">овсяные отруби</span>
+                    <span class="ingredient-tag green">изомальтоолигосахарид</span>
+                    <span class="ingredient-tag yellow">молочный шоколад</span>
+                    <span class="ingredient-tag green">вода</span>
+                    <span class="ingredient-tag green">эритрит</span>
+                    <span class="ingredient-tag green">какао-порошок</span>
+                    <span class="ingredient-tag yellow">растительное масло</span>
+                    <span class="ingredient-tag yellow">меланж яичный</span>
+                    <span class="ingredient-tag yellow">соль</span>
+                    <span class="ingredient-tag orange">ароматизаторы</span>
+                    <span class="ingredient-tag orange">гидрокарбонат натрия</span>
+                    <span class="ingredient-tag orange">лимонная кислота</span>
+                    <span class="ingredient-tag orange">соевый лецитин</span>
+                    <span class="ingredient-tag orange">аскорбиновая кислота</span>
+                    <span class="ingredient-tag red">сукралоза</span>
+                    <span class="ingredient-tag red">сорбат калия</span>
+                </div>
+
+                <div class="analysis-footnote">
+                    <span class="badge">✓ детальный анализ</span>
+                    <span>ProСоставы · 2026</span>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- ПРОДУКТ 1: Bombbar Брауни (ЧЕК-ЛИСТ) — С ОПИСАНИЕМ -->
-    <div class="card card-dark">
-        <div class="product-mini">
-            <img src="https://images-foodtech.magnit.ru/etGNMrtlm5LkixEGI__aCw2umfLfHhaCTWaTMa1xgcA/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/839/839c47313febdfd290f33fd054132bf1/679fbb94fe92a489624bb114b7868b6d.jpeg@webp" alt="Bombbar Брауни" loading="lazy">
-            <div class="name">Печенье Брауни Bombbar <span class="weight">40 г</span></div>
-        </div>
+    <script>
+        // ===================== ФОНОВАЯ АНИМАЦИЯ =====================
+        (function() {
+            var width, height, canvas, ctx, points, animateHeader = true;
 
-        <!-- ОПИСАНИЕ (из первой карточки) -->
-        <div class="info-block">
-            <div class="label">📋 Описание</div>
-            <div class="text">Альтернатива сладкому для ЗОЖ. Без сахара, 108 ккал и 10 г белка на порцию. Подходит спортсменам и диабетикам.</div>
-        </div>
+            function initHeader() {
+                width = window.innerWidth;
+                height = window.innerHeight;
 
-        <div class="result-box">
-            <div class="title">🎯 Результат</div>
-            <div class="text">Это печенье поможет вам <strong>не сорваться с диеты</strong> — оно даёт чувство сытости и сладкий вкус без сахара, заменяя вредные десерты.</div>
-        </div>
+                canvas = document.getElementById('demo-canvas');
+                canvas.width = width;
+                canvas.height = height;
+                ctx = canvas.getContext('2d');
 
-        <div class="checklist">
-            <div class="title">📋 Чек-лист для выбора <span class="brand">ProСоставы</span></div>
-            <div class="checklist-item"><span class="icon good">✓</span> Нет сахара — не поднимает инсулин</div>
-            <div class="checklist-item"><span class="icon good">✓</span> Высокое содержание белка (10 г на порцию)</div>
-            <div class="checklist-item"><span class="icon good">✓</span> Низкая калорийность — идеально для дефицита</div>
-            <div class="checklist-item"><span class="icon warning">⚠</span> Содержит сахарозаменители (эритрит, сукралоза)</div>
-            <div class="checklist-item"><span class="icon warning">⚠</span> Соевый лецитин — возможен ГМО</div>
-            <div class="checklist-item"><span class="icon bad">✕</span> Длинный состав с Е-добавками</div>
-        </div>
+                var stepX = Math.min(width / 18, 55);
+                var stepY = Math.min(height / 18, 55);
+                points = [];
+                for (var x = 0; x < width; x += stepX) {
+                    for (var y = 0; y < height; y += stepY) {
+                        var px = x + (Math.random() - 0.5) * stepX * 0.6;
+                        var py = y + (Math.random() - 0.5) * stepY * 0.6;
+                        var p = {
+                            x: px,
+                            originX: px,
+                            y: py,
+                            originY: py,
+                            targetX: px,
+                            targetY: py,
+                            speed: 0.005 + Math.random() * 0.015
+                        };
+                        points.push(p);
+                    }
+                }
 
-        <div class="footer-cta">
-            <span>Больше разборов на</span>
-            <span class="channel">ProСоставы</span>
-            <span class="badge">⭐</span>
-        </div>
-    </div>
+                for (var i = 0; i < points.length; i++) {
+                    setNewTarget(points[i]);
+                }
 
-    <!-- ============================================================ -->
-    <!-- ПРОДУКТ 2: Sneakiq Soj (ОЦЕНКА) — БЕЗ ОПИСАНИЯ И СОСТАВА -->
-    <!-- ============================================================ -->
-    <div class="card">
-        <img class="card-image-full" src="https://images-foodtech.magnit.ru/0QzLRHeUA5J6q-nkDFIGvOgx-7blHtQtKmsfHlfufw4/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/pim/goods/8000069555/image/881462f814b65e0a57c872aa1b90189e.jpeg@webp" alt="Sneakiq Soj" loading="lazy">
+                animate();
+                window.addEventListener('resize', onResize);
+            }
 
-        <div class="top-row">
-            <span class="badge-weight">50 г</span>
-            <span class="badge-rating mid">Умеренно</span>
-        </div>
+            function onResize() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+                for (var i = 0; i < points.length; i++) {
+                    var p = points[i];
+                    if (p.originX > width) p.originX = width - 20;
+                    if (p.originY > height) p.originY = height - 20;
+                    if (p.x > width) p.x = p.originX;
+                    if (p.y > height) p.y = p.originY;
+                }
+            }
 
-        <div class="name">Sneakiq Soj Солёная карамель</div>
+            function setNewTarget(p) {
+                var range = 60 + Math.random() * 80;
+                p.targetX = p.originX + (Math.random() - 0.5) * range * 2;
+                p.targetY = p.originY + (Math.random() - 0.5) * range * 2;
+                p.targetX = Math.max(10, Math.min(width - 10, p.targetX));
+                p.targetY = Math.max(10, Math.min(height - 10, p.targetY));
+                p.speed = 0.003 + Math.random() * 0.012;
+            }
 
-        <div class="macro-block">
-            <div class="label"><span>⚡ на порцию (50 г)</span></div>
-            <div class="macro-row">
-                <div class="macro-item">
-                    <span class="macro-val">155 <small>ккал</small></span>
-                    <span class="macro-label">Калории</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">9 <small>г</small></span>
-                    <span class="macro-label">Белки</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">7 <small>г</small></span>
-                    <span class="macro-label">Жиры</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">6 <small>г</small></span>
-                    <span class="macro-label">Углеводы</span>
-                </div>
-            </div>
-        </div>
+            function animate() {
+                if (animateHeader) {
+                    ctx.clearRect(0, 0, width, height);
 
-        <div class="pros-cons-row">
-            <div class="pros-box">
-                <div class="p-title">✅ Польза</div>
-                <ul>
-                    <li>Содержит пребиотики (инулин, олигофруктоза)</li>
-                    <li>Поддерживает здоровье кишечника</li>
-                    <li>Без сахара — подходит диабетикам</li>
-                    <li>Приятный вкус солёной карамели</li>
-                    <li>Доступная цена</li>
-                </ul>
-            </div>
-            <div class="cons-box">
-                <div class="c-title">⚠️ Нюансы</div>
-                <ul>
-                    <li>Содержит 4 вида подсластителей — риск слабительного эффекта</li>
-                    <li>Заменитель масла какао — часто трансжиры</li>
-                    <li>Высокое содержание жиров (14 г на 100 г)</li>
-                    <li>Содержит глютен (овсяная мука)</li>
-                    <li>Может вызвать вздутие из-за сахарных спиртов</li>
-                </ul>
-            </div>
-        </div>
+                    for (var i = 0; i < points.length; i++) {
+                        var p = points[i];
+                        var dx = p.targetX - p.x;
+                        var dy = p.targetY - p.y;
+                        var dist = Math.sqrt(dx * dx + dy * dy);
 
-        <div class="footer-cta">
-            <span>Больше разборов на</span>
-            <span class="channel">ProСоставы</span>
-            <span class="badge">⭐</span>
-        </div>
-    </div>
+                        if (dist < 1) {
+                            setNewTarget(p);
+                        } else {
+                            var moveSpeed = Math.min(p.speed * 2, 0.08);
+                            p.x += dx * moveSpeed;
+                            p.y += dy * moveSpeed;
+                        }
+                    }
 
-    <!-- ПРОДУКТ 2: Sneakiq Soj (ЧЕК-ЛИСТ) — С ОПИСАНИЕМ -->
-    <div class="card card-dark">
-        <div class="product-mini">
-            <img src="https://images-foodtech.magnit.ru/0QzLRHeUA5J6q-nkDFIGvOgx-7blHtQtKmsfHlfufw4/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/pim/goods/8000069555/image/881462f814b65e0a57c872aa1b90189e.jpeg@webp" alt="Sneakiq Soj" loading="lazy">
-            <div class="name">Sneakiq Soj Солёная карамель <span class="weight">50 г</span></div>
-        </div>
+                    // Линии
+                    for (var i = 0; i < points.length; i++) {
+                        var p1 = points[i];
+                        var distances = [];
+                        for (var j = 0; j < points.length; j++) {
+                            if (i === j) continue;
+                            var p2 = points[j];
+                            var d = Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2);
+                            distances.push({ idx: j, dist: d });
+                        }
+                        distances.sort(function(a, b) { return a.dist - b.dist; });
 
-        <div class="info-block">
-            <div class="label">📋 Описание</div>
-            <div class="text">Протеиновый батончик с пребиотиками и жареным арахисом. Приятный вкус солёной карамели.</div>
-        </div>
+                        for (var k = 0; k < Math.min(3, distances.length); k++) {
+                            var d = distances[k];
+                            if (d.dist < 25000) {
+                                var p2 = points[d.idx];
+                                var opacity = 0.08 + (1 - d.dist / 25000) * 0.15;
+                                ctx.beginPath();
+                                ctx.moveTo(p1.x, p1.y);
+                                ctx.lineTo(p2.x, p2.y);
+                                ctx.strokeStyle = 'rgba(100, 140, 180, ' + opacity + ')';
+                                ctx.lineWidth = 0.6;
+                                ctx.stroke();
+                            }
+                        }
+                    }
 
-        <div class="result-box">
-            <div class="title">🎯 Результат</div>
-            <div class="text">Этот батончик поможет вам <strong>не сорваться с диеты</strong> благодаря сладкому вкусу, но лучше съесть его до тренировки, чтобы сжечь лишние жиры.</div>
-        </div>
+                    // Точки
+                    for (var i = 0; i < points.length; i++) {
+                        var p = points[i];
+                        var size = 1.5 + Math.random() * 0.5;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, size, 0, 2 * Math.PI);
+                        ctx.fillStyle = 'rgba(60, 120, 180, 0.25)';
+                        ctx.fill();
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, size * 2.5, 0, 2 * Math.PI);
+                        ctx.fillStyle = 'rgba(60, 120, 180, 0.04)';
+                        ctx.fill();
+                    }
+                }
+                requestAnimationFrame(animate);
+            }
 
-        <div class="checklist">
-            <div class="title">📋 Чек-лист для выбора <span class="brand">ProСоставы</span></div>
-            <div class="checklist-item"><span class="icon good">✓</span> Содержит пребиотики (инулин, олигофруктоза)</div>
-            <div class="checklist-item"><span class="icon good">✓</span> Нет сахара</div>
-            <div class="checklist-item"><span class="icon good">✓</span> Доступная цена</div>
-            <div class="checklist-item"><span class="icon warning">⚠</span> Много сахарозаменителей</div>
-            <div class="checklist-item"><span class="icon warning">⚠</span> 14 г жиров — почти 30% дневной нормы</div>
-            <div class="checklist-item"><span class="icon bad">✕</span> Заменитель масла какао — трансжиры</div>
-        </div>
+            initHeader();
+        })();
 
-        <div class="footer-cta">
-            <span>Больше разборов на</span>
-            <span class="channel">ProСоставы</span>
-            <span class="badge">⭐</span>
-        </div>
-    </div>
+        // ===================== ЛОГИКА КАРТОЧКИ =====================
+        // Навигация по страницам
+        const navBtns = document.querySelectorAll('.page-nav button');
+        const pages = {
+            page1: document.getElementById('page1'),
+            page2: document.getElementById('page2')
+        };
 
-    <!-- ============================================================ -->
-    <!-- ПРОДУКТ 3: Snaq Fabriq Арахис-изюм (ОЦЕНКА) — БЕЗ ОПИСАНИЯ -->
-    <!-- ============================================================ -->
-    <div class="card">
-        <img class="card-image-full" src="https://images-foodtech.magnit.ru/qZkYlv9RyaVHxFKtenIJ2O5Ul7S4IH1W4zSF1YhatcQ/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/64d/64d98ca7af44d9e973205bd2733e64a2/c4dd7e6219b57f2ac4aa61177f223ebb.jpeg@webp" alt="Snaq Fabriq" loading="lazy">
+        navBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                navBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
 
-        <div class="top-row">
-            <span class="badge-weight">45 г</span>
-            <span class="badge-rating mid">Умеренно</span>
-        </div>
+                const pageId = this.dataset.page;
+                Object.keys(pages).forEach(id => {
+                    pages[id].classList.toggle('active', id === pageId);
+                });
+            });
+        });
 
-        <div class="name">Snaq Fabriq Арахис-изюм-карамель</div>
+        // КБЖУ
+        const toggleGroup = document.getElementById('toggleGroup');
+        const nutritionData = {
+            100: { cal: 271, prot: 25, fat: 10.5, carb: 13 },
+            40: { cal: 108, prot: 10, fat: 4.2, carb: 5.2 }
+        };
 
-        <div class="macro-block">
-            <div class="label"><span>⚡ на порцию (45 г)</span></div>
-            <div class="macro-row">
-                <div class="macro-item">
-                    <span class="macro-val">155 <small>ккал</small></span>
-                    <span class="macro-label">Калории</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">7.6 <small>г</small></span>
-                    <span class="macro-label">Белки</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">8.5 <small>г</small></span>
-                    <span class="macro-label">Жиры</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">5.8 <small>г</small></span>
-                    <span class="macro-label">Углеводы</span>
-                </div>
-            </div>
-        </div>
+        toggleGroup.addEventListener('click', function(e) {
+            const btn = e.target.closest('.toggle-btn');
+            if (!btn) return;
+            const weight = parseInt(btn.dataset.weight);
+            if (isNaN(weight)) return;
 
-        <div class="pros-cons-row">
-            <div class="pros-box">
-                <div class="p-title">✅ Польза</div>
-                <ul>
-                    <li>Натуральные ингредиенты (арахис, изюм)</li>
-                    <li>Содержит клетчатку (инулин, олигофруктоза)</li>
-                    <li>Вкус как у обычного печенья — психологический комфорт</li>
-                    <li>Содержит молочный белок</li>
-                </ul>
-            </div>
-            <div class="cons-box">
-                <div class="c-title">⚠️ Нюансы</div>
-                <ul>
-                    <li>Очень жирный — 19 г на 100 г (почти 50% нормы)</li>
-                    <li>Изюм + глазурь = быстрый сахар (инсулиновый пик)</li>
-                    <li>Перегружен консервантами (сорбат калия)</li>
-                    <li>Содержит глицерин и эритрит</li>
-                    <li>Не подходит для дефицита калорий</li>
-                </ul>
-            </div>
-        </div>
+            document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-        <div class="footer-cta">
-            <span>Больше разборов на</span>
-            <span class="channel">ProСоставы</span>
-            <span class="badge">⭐</span>
-        </div>
-    </div>
+            const data = nutritionData[weight];
+            animateValue('calVal', data.cal);
+            animateValue('protVal', data.prot);
+            animateValue('fatVal', data.fat);
+            animateValue('carbVal', data.carb);
+        });
 
-    <!-- ПРОДУКТ 3: Snaq Fabriq Арахис-изюм (ЧЕК-ЛИСТ) — С ОПИСАНИЕМ -->
-    <div class="card card-dark">
-        <div class="product-mini">
-            <img src="https://images-foodtech.magnit.ru/qZkYlv9RyaVHxFKtenIJ2O5Ul7S4IH1W4zSF1YhatcQ/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/64d/64d98ca7af44d9e973205bd2733e64a2/c4dd7e6219b57f2ac4aa61177f223ebb.jpeg@webp" alt="Snaq Fabriq" loading="lazy">
-            <div class="name">Snaq Fabriq Арахис-изюм-карамель <span class="weight">45 г</span></div>
-        </div>
+        function animateValue(elementId, target) {
+            const el = document.getElementById(elementId);
+            const isFloat = target % 1 !== 0;
+            const start = parseFloat(el.textContent) || 0;
+            const duration = 800;
+            const startTime = performance.now();
 
-        <div class="info-block">
-            <div class="label">📋 Описание</div>
-            <div class="text">Протеиновое печенье в молочном шоколаде с арахисом, изюмом и карамелью. Содержит инулин и олигофруктозу.</div>
-        </div>
-
-        <div class="result-box">
-            <div class="title">🎯 Результат</div>
-            <div class="text">Это печенье <strong>не поможет вам не сорваться</strong> с диеты — слишком много жиров и скрытых сахаров. Лучше оставить для "читмила".</div>
-        </div>
-
-        <div class="checklist">
-            <div class="title">📋 Чек-лист для выбора <span class="brand">ProСоставы</span></div>
-            <div class="checklist-item"><span class="icon warning">⚠</span> Есть натуральные ингредиенты (арахис, изюм)</div>
-            <div class="checklist-item"><span class="icon bad">✕</span> Очень жирный (19 г на 100 г)</div>
-            <div class="checklist-item"><span class="icon bad">✕</span> Изюм и глазурь — быстрые сахара</div>
-            <div class="checklist-item"><span class="icon bad">✕</span> Много консервантов (сорбат калия)</div>
-            <div class="checklist-item"><span class="icon warning">⚠</span> Подходит только для перекуса, не для диеты</div>
-        </div>
-
-        <div class="footer-cta">
-            <span>Больше разборов на</span>
-            <span class="channel">ProСоставы</span>
-            <span class="badge">⭐</span>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- ПРОДУКТ 4: Snaq Fabriq Вафельный (ОЦЕНКА) — БЕЗ ОПИСАНИЯ -->
-    <!-- ============================================================ -->
-    <div class="card">
-        <img class="card-image-full" src="https://images-foodtech.magnit.ru/slY6bfwgINTJV_aiENy9raHuqycbB2dTKDYpJylWfFA/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/be8/be87da53ace9d36b35539e62c08c880b/2b1cd2008f97c12a2fbc21513fe6aedf.jpeg@webp" alt="Snaq Fabriq Вафля" loading="lazy">
-
-        <div class="top-row">
-            <span class="badge-weight">45 г</span>
-            <span class="badge-rating bad">С осторожностью</span>
-        </div>
-
-        <div class="name">Snaq Fabriq Вафельный (Ваниль)</div>
-
-        <div class="macro-block">
-            <div class="label"><span>⚡ на порцию (45 г)</span></div>
-            <div class="macro-row">
-                <div class="macro-item">
-                    <span class="macro-val">169 <small>ккал</small></span>
-                    <span class="macro-label">Калории</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">2.7 <small>г</small></span>
-                    <span class="macro-label">Белки</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">12 <small>г</small></span>
-                    <span class="macro-label">Жиры</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">6.7 <small>г</small></span>
-                    <span class="macro-label">Углеводы</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="pros-cons-row">
-            <div class="pros-box">
-                <div class="p-title">✅ Польза</div>
-                <ul>
-                    <li>Вкус как у обычной вафли</li>
-                    <li>Нет сахара</li>
-                    <li>Подходит для кето-диеты</li>
-                </ul>
-            </div>
-            <div class="cons-box">
-                <div class="c-title">⚠️ Нюансы</div>
-                <ul>
-                    <li>27% насыщенных жиров — вред для сердца и сосудов</li>
-                    <li>Всего 6% белка — бесполезный перекус</li>
-                    <li>Высокая калорийность при минимуме пользы</li>
-                    <li>Нагрузка на печень из-за кокосового масла</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-cta">
-            <span>Больше разборов на</span>
-            <span class="channel">ProСоставы</span>
-            <span class="badge">⭐</span>
-        </div>
-    </div>
-
-    <!-- ПРОДУКТ 4: Snaq Fabriq Вафельный (ЧЕК-ЛИСТ) — С ОПИСАНИЕМ -->
-    <div class="card card-dark">
-        <div class="product-mini">
-            <img src="https://images-foodtech.magnit.ru/slY6bfwgINTJV_aiENy9raHuqycbB2dTKDYpJylWfFA/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/uf/be8/be87da53ace9d36b35539e62c08c880b/2b1cd2008f97c12a2fbc21513fe6aedf.jpeg@webp" alt="Snaq Fabriq Вафля" loading="lazy">
-            <div class="name">Snaq Fabriq Вафельный (Ваниль) <span class="weight">45 г</span></div>
-        </div>
-
-        <div class="info-block">
-            <div class="label">📋 Описание</div>
-            <div class="text">Хрустящая вафля с ванильным кремом в молочном шоколаде. Без сахара, с пищевыми волокнами.</div>
-        </div>
-
-        <div class="result-box">
-            <div class="title">🎯 Результат</div>
-            <div class="text">Эта вафля <strong>не поможет вам не сорваться</strong> — она высококалорийная и практически не содержит белка. Оставьте для редкого баловства.</div>
-        </div>
-
-        <div class="checklist">
-            <div class="title">📋 Чек-лист для выбора <span class="brand">ProСоставы</span></div>
-            <div class="checklist-item"><span class="icon bad">✕</span> Всего 6% белка — бесполезно</div>
-            <div class="checklist-item"><span class="icon bad">✕</span> 27% жиров — вред для сердца</div>
-            <div class="checklist-item"><span class="icon warning">⚠</span> Нет сахара, но много насыщенных жиров</div>
-            <div class="checklist-item"><span class="icon bad">✕</span> Высокая калорийность (375 ккал/100г)</div>
-            <div class="checklist-item"><span class="icon warning">⚠</span> Только для редкого баловства</div>
-        </div>
-
-        <div class="footer-cta">
-            <span>Больше разборов на</span>
-            <span class="channel">ProСоставы</span>
-            <span class="badge">⭐</span>
-        </div>
-    </div>
-
-    <!-- ============================================================ -->
-    <!-- ПРОДУКТ 5: Bombbar Кокос (ОЦЕНКА) — БЕЗ ОПИСАНИЯ -->
-    <!-- ============================================================ -->
-    <div class="card">
-        <img class="card-image-full" src="https://images-foodtech.magnit.ru/_zooOLGwfXLKh8CRwoFn2OnMSBDlZEsaTN5UyQc7PUI/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/pim/goods/1000302692/image/f7417cff51919ae6c90031911f00117d.jpeg@webp" alt="Bombbar Кокос" loading="lazy">
-
-        <div class="top-row">
-            <span class="badge-weight">60 г</span>
-            <span class="badge-rating good">Рекомендуем</span>
-        </div>
-
-        <div class="name">Bombbar Кокос</div>
-
-        <div class="macro-block">
-            <div class="label"><span>⚡ на порцию (60 г)</span></div>
-            <div class="macro-row">
-                <div class="macro-item">
-                    <span class="macro-val">176 <small>ккал</small></span>
-                    <span class="macro-label">Калории</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">20 <small>г</small></span>
-                    <span class="macro-label">Белки</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">4.8 <small>г</small></span>
-                    <span class="macro-label">Жиры</span>
-                </div>
-                <div class="macro-item">
-                    <span class="macro-val">3.1 <small>г</small></span>
-                    <span class="macro-label">Углеводы</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="pros-cons-row">
-            <div class="pros-box">
-                <div class="p-title">✅ Польза</div>
-                <ul>
-                    <li>Эталонный КБЖУ: 33 г белка на 100 г</li>
-                    <li>Натуральный подсластитель (стевия) — безопасен</li>
-                    <li>Сытость на 4–5 часов — помогает в дефиците</li>
-                    <li>Минимум углеводов — подходит для кето</li>
-                    <li>Подходит для диабетиков</li>
-                    <li>Без глютена и муки</li>
-                </ul>
-            </div>
-            <div class="cons-box">
-                <div class="c-title">⚠️ Нюансы</div>
-                <ul>
-                    <li>Высокая цена (119 ₽ за 60 г)</li>
-                    <li>Следы орехов — аллергикам осторожно</li>
-                    <li>При жаре может "поплыть" из-за кокосового масла</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="footer-cta">
-            <span>Больше разборов на</span>
-            <span class="channel">ProСоставы</span>
-            <span class="badge">⭐</span>
-        </div>
-    </div>
-
-    <!-- ПРОДУКТ 5: Bombbar Кокос (ЧЕК-ЛИСТ) — С ОПИСАНИЕМ -->
-    <div class="card card-dark">
-        <div class="product-mini">
-            <img src="https://images-foodtech.magnit.ru/_zooOLGwfXLKh8CRwoFn2OnMSBDlZEsaTN5UyQc7PUI/rs:fit:1600:1600/plain/s3://img-dostavka/catalog/pim/goods/1000302692/image/f7417cff51919ae6c90031911f00117d.jpeg@webp" alt="Bombbar Кокос" loading="lazy">
-            <div class="name">Bombbar Кокос <span class="weight">60 г</span></div>
-        </div>
-
-        <div class="info-block">
-            <div class="label">📋 Описание</div>
-            <div class="text">20 г белка в батончике, стевия, кокосовая стружка. Идеальный перекус для спортсменов, кето-диеты и здорового образа жизни.</div>
-        </div>
-
-        <div class="result-box">
-            <div class="title">🎯 Результат</div>
-            <div class="text">Этот батончик <strong>точно поможет вам не сорваться с диеты</strong> — 20 г белка и 176 ккал дают сытость на 5 часов. Идеальный выбор!</div>
-        </div>
-
-        <div class="checklist">
-            <div class="title">📋 Чек-лист для выбора <span class="brand">ProСоставы</span></div>
-            <div class="checklist-item"><span class="icon good">✓</span> 20 г белка на порцию — рекорд!</div>
-            <div class="checklist-item"><span class="icon good">✓</span> Натуральный подсластитель (стевия) — безопасен</div>
-            <div class="checklist-item"><span class="icon good">✓</span> Минимум жиров (4.8 г на порцию)</div>
-            <div class="checklist-item"><span class="icon good">✓</span> Идеально для дефицита калорий</div>
-            <div class="checklist-item"><span class="icon good">✓</span> Без глютена и муки</div>
-            <div class="checklist-item"><span class="icon warning">⚠</span> Высокая цена — но оно того стоит</div>
-        </div>
-
-        <div class="footer-cta">
-            <span>Больше разборов на</span>
-            <span class="channel">ProСоставы</span>
-            <span class="badge">⭐</span>
-        </div>
-    </div>
+            function update(time) {
+                const elapsed = time - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const value = start + (target - start) * easeOut;
+                el.textContent = isFloat ? value.toFixed(1) : Math.round(value);
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    el.textContent = isFloat ? target.toFixed(1) : target;
+                }
+            }
+            requestAnimationFrame(update);
+        }
+    </script>
 
 </body>
 </html>
